@@ -15,7 +15,7 @@ This project is a task management web application with a REST API built using Dj
 ### Clone the repository:
 
 * git clone https://github.com/sagorluc/Task-Manager-with-Rest-Api.git
-* cd task-manager
+* cd Task-Manager-with-Rest-Api
 
 ### Create a virtual environment:
 python3 -m venv venv
