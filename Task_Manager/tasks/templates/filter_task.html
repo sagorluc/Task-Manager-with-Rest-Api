@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Filter{% endblock title %}
+{% load crispy_forms_tags %}
+
+{% block body %}
+<div style="width: 95%; margin: auto; margin-top: 50px; margin-bottom: 100px;">
+  <h2 style="width:50%; margin: auto;">Filter Tasks</h2>
+  <form method="post" style="width:50%; margin: auto;">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button class="btn btn-primary" type="submit">Filter</button>
+    <a class="btn btn-primary" href="{% url "filter" %}">Filter Agein</a>
+  </form>
+
+  <table class="table table-success table-striped" style="text-align: center; margin-top: 50px;">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Photo</th>
+        <th scope="col">Title</th>
+        <th scope="col">Name</th>
+        <th scope="col">Due Date</th>
+        <th scope="col">Priority</th>
+        <th scope="col">Status</th>
+        <th scope="col">Update</th>
+        <th scope="col">Delete</th>
+        <th scope="col">More Info</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for task in tasks %}
+        {% if task.complete or not task.complete %}
+        {% with task_image=task.tasks.first %}
+      <tr>
+       
+        <th scope="row">{{task.id}}</th>
+        <td>
+            {% if task_image %}          
+                <img style="width: 100px; height: 70px;" 
+                src="{{ task_image.image.url }}" alt="image" class="image1">
+            {% else %}
+          Image not Avaiable
+        {% endif %} 
+        </td>
+        <td> {{task.title}} </td>
+        <td> {{task.user.username}} </td>
+        <td> {{task.due_date}} </td>
+        <td> {{task.priority}} </td>
+        <td> 
+            {% if task.complete %}
+                <span style="color: green;">Complate</span>
+            {% else %}
+                <span style="color: red;">Incomplate</span>
+            {% endif %}
+
+        </td>
+
+        <td> <a href="{% url 'update_task' task.id %}" class="btn btn-warning">Update</a> </td>
+        <td> <a href="{% url 'delete_task' task.id %}" class="btn btn-danger">Delete</a> </td>
+        <td> <a href="{% url "detail_task" task.id %}" class="btn btn-primary">MoreInfo</a> </td>
+
+        {% if not task.complete %}
+            <td> <a href="{% url 'complate_task' task.id %}" class="btn btn-success">Complete</a> </td>
+        {% endif %}
+
+      </tr>
+        {% endwith %}
+      {% endif %}
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock body %}

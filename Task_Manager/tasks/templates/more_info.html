@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Info{% endblock title %}
+{% block join_css %}
+<link rel="stylesheet" href="{% static 'more_info.css' %}">
+{% endblock join_css %}
+
+{% block body %}
+<div style=" text-align: left; margin-top: 70px; margin-left: 100px; margin-bottom: 70px;">
+
+    {% comment %} <img src="{{info.tasks.first.image.url}}" alt="user image" class="images"> {% endcomment %}
+    {% for task_image in task_images %}
+        <img style="width: 200px; height: 150px;" 
+        src="{{ task_image.image.url }}" alt="image" class="image1">
+    {% endfor %}
+
+    <h3>ID:- {{info.id}}</h3>
+
+    <h3>Name:- {{info.user.username}}</h3>
+
+    <h3>Title:- {{info.title}}</h3>
+
+    <h3>Due Date:- {{info.due_date}}</h3>
+
+    <h3>Description:- {{info.description}}</h3>
+
+    <h3>Priority:- {{info.priority}}</h3>
+
+    <h3>Complete:- {{info.complete}}</h3>
+
+    <h3>Created Date:- {{info.created_at}}</h3>
+
+    <h3>Last Update:- {{info.updated_at}}</h3>
+
+    <a class="btn btn-primary" href="{% url "update_task" info.id %}">Update</a>
+    <a class="btn btn-primary" href="{% url "complate_task" info.id %}">Back</a>
+
+
+</div>
+
+{% endblock body %}

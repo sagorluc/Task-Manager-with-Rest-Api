@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Update Task{% endblock title %}
+{% block join_css %}
+<link rel="stylesheet" href="{% static 'css/update_post.css' %}">
+{% endblock join_css %}
+{% block body %}
+    <h1 style="width:53%; margin:auto; padding: 15px; font-size: 40px">Update Task</h1>
+    {% load crispy_forms_tags %}
+    <div style="width: 50%; margin: auto;">
+
+        {% if not task.complete %}
+            <form method= 'POST' style="margin-bottom: 50px;" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                {{form|crispy}}           
+                <button class="btn btn-primary" type="submit">Update</button>
+        
+
+                {% comment %} <input class="btn btn-primary" type="submit" value="Update"> {% endcomment %}
+
+            </form>
+        {% else %}
+            <form method= 'POST' style="margin-bottom: 50px;" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                {{form|crispy}}
+
+                <a href="{% url "update_task" task.id %}">
+                    <button class="btn btn-primary" type="submit">Update</button>
+                </a>
+
+                {% comment %} <input class="btn btn-primary" type="submit" value="Update"> {% endcomment %}
+
+            </form>
+        {% endif %}
+         
+    </div>
+{% endblock body %}
