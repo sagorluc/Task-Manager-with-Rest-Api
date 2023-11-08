@@ -90,12 +90,12 @@ def change_password(request, token):
                 messages.success(request, "Password does not match")
                 return redirect(f'change_pass/{token}')
             
-            else:
-                user_obj = User.objects.get(id = user_id)
-                user_obj.set_password(new_password)
-                user_obj.save()
-                messages.success(request, "Password has been change successfully.")
-                return redirect('login')
+        
+            user_obj = User.objects.get(id = user_id)
+            user_obj.set_password(new_password)
+            user_obj.save()
+            messages.success(request, "Password has been change successfully.")
+            return redirect('login')
         
     except Exception as e:
         print(e)
