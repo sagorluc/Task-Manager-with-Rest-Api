@@ -9,10 +9,21 @@
 <div style=" text-align: left; margin-top: 70px; margin-left: 100px; margin-bottom: 70px;">
 
     {% comment %} <img src="{{info.tasks.first.image.url}}" alt="user image" class="images"> {% endcomment %}
-    {% for task_image in task_images %}
+
+    {% comment %} {% for task_image in task_images %}
         <img style="width: 200px; height: 150px;" 
         src="{{ task_image.image.url }}" alt="image" class="image1">
-    {% endfor %}
+        <a href="{% url "delete_image" task_image.id %}" class="btn btn-danger">Delete Image</a>
+    {% endfor %}  {% endcomment %}
+
+
+    {% if info.tasks.all %}
+        <h3>Images:</h3>
+        {% for image in info.tasks.all %}
+            <img src="{{ image.image.url }}" alt="Task Image" style="width: 200px; height: 150px;">
+            <a href="{% url 'delete_image' image.id %}" class="btn btn-danger">Delete</a>
+        {% endfor %}
+    {% endif %}
 
     <h3>ID:- {{info.id}}</h3>
 

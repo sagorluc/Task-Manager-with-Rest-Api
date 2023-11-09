@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import logout, login
 from django.urls import reverse_lazy
 from tasks.models import TaskModel, TaskImage
@@ -10,6 +10,7 @@ from django.db.models import Q
 from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+
 
 # Create your views here.
 @method_decorator(login_required, name='dispatch')
@@ -98,7 +99,19 @@ class TaskDelete(DeleteView):
             return reverse_lazy('complate_task', kwargs={'id': task.id})
         else:
             return reverse_lazy('show_task')
+        
+        
+        
+        
+@method_decorator(login_required, name='dispatch')        
+class DeleteImageView(View):
+    def get(self, request, id):
+        image = get_object_or_404(TaskImage, id=id)
+        image.delete()
+        task_id  = image.task.id # get the task id
+        return redirect('detail_task', task_id) # detail_task page e redirect hobe
     
+
 
     
 @method_decorator(login_required, name='dispatch')  
@@ -115,7 +128,8 @@ class TaskDetail(DetailView):
         context['task_images'] = task_images
         return context
     
-    
+
+  
     
 @method_decorator(login_required, name='dispatch')  
 class SearchTask(ListView):
@@ -138,7 +152,8 @@ class SearchTask(ListView):
         return context
     
     
-    
+
+  
 @method_decorator(login_required, name='dispatch')
 class FilterTask(View):
     template_name = 'filter_task.html'

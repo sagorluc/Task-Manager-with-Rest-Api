@@ -3,7 +3,7 @@ from tasks.models import TaskModel, TaskImage
 
 class TaskForm(forms.ModelForm):
     class Meta:
-        model = TaskModel
+        model  = TaskModel
         fields = ['user', 'title', 'description', 'due_date', 'priority', 'complete']
     
     # set placeholder    
@@ -21,21 +21,23 @@ class SearchForm(forms.Form):
     
 class TaskUpdateForm(forms.ModelForm):
     class Meta:
-        model = TaskModel
-        fields = ['user', 'title', 'description', 'due_date', 'priority', 'complete']
+        model   = TaskModel
+        fields  = ['user', 'title', 'description', 'due_date', 'priority', 'complete']
         widgets = {
             'due_date': forms.DateInput(attrs={'type': 'date'})
         }
 
-    image = forms.ImageField(required=False)
+    image = forms.ImageField(required=False)    # image field can be blank
 
+    # Image field label
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['image'].label = 'Image'
 
+    # Set the image 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        image = self.cleaned_data.get('image')
+        image    = self.cleaned_data.get('image')
         if image:
             task_image = TaskImage(task=instance, image=image)
             task_image.save()
@@ -53,7 +55,7 @@ class TaskUpdateForm(forms.ModelForm):
         
         
 class TaskFilterForm(forms.Form):
-    priority = forms.CharField(max_length=10, required=False)
-    complete = forms.BooleanField(required=False)
-    due_date = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date'}))
+    priority   = forms.CharField(max_length=10, required=False)
+    complete   = forms.BooleanField(required=False)
+    due_date   = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date'}))
     created_at = forms.DateTimeField(required=False, widget=forms.DateInput(attrs={'type': 'date'}))

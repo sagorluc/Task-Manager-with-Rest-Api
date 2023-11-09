@@ -10,29 +10,30 @@ CHOICES = [
 ]
 
 class TaskModel(models.Model):
-    user = models.ForeignKey(User, on_delete= models.CASCADE, related_name='user')
-    title = models.CharField(max_length= 100)
+    user        = models.ForeignKey(User, on_delete= models.CASCADE, related_name='user')
+    title       = models.CharField(max_length= 100)
     description = models.TextField()
-    due_date = models.DateField()
-    priority = models.CharField(max_length=10, choices= CHOICES)
-    complete = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
+    due_date    = models.DateField()
+    priority    = models.CharField(max_length=10, choices= CHOICES)
+    complete    = models.BooleanField(default=False)
+    created_at  = models.DateTimeField(auto_now_add=True)
+    updated_at  = models.DateTimeField(auto_now=True, null=True, blank=True)
     
     class Meta:
-        verbose_name = 'Task'
+        verbose_name        = 'Task'
         verbose_name_plural = 'Tasks'
+        ordering = ['id']
         
     def __str__(self):
         return self.title
     
     
 class TaskImage(models.Model):
-    task = models.ForeignKey(TaskModel, on_delete=models.CASCADE, related_name= 'tasks')
+    task  = models.ForeignKey(TaskModel, on_delete=models.CASCADE, related_name= 'tasks')
     image = models.ImageField(upload_to='photos/tasks')
     
     class Meta:
-        verbose_name = 'Task Image'
+        verbose_name        = 'Task Image'
         verbose_name_plural = 'Task Images'
         
     def __str__(self):
