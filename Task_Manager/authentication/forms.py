@@ -10,8 +10,8 @@ class RegistrationFrom(UserCreationForm):
 
     # chaeck the both passowrd is matched 
     def clean(self):
-        cleaned_data = super(RegistrationFrom, self).clean()
-        password = cleaned_data.get('password1')
+        cleaned_data     = super(RegistrationFrom, self).clean()
+        password         = cleaned_data.get('password1')
         confirm_password = cleaned_data.get('password2')
 
         if password != confirm_password:
@@ -29,13 +29,13 @@ class RegistrationFrom(UserCreationForm):
         
 class LoginForm(AuthenticationForm):
     class Meta:
-        model = User
+        model  = User
         fields = ['username', 'password']
         
     def clean(self):
         cleaned_data =  super(LoginForm, self).clean()
-        username = cleaned_data.get('username')
-        password = cleaned_data.get('password')
+        username     = cleaned_data.get('username')
+        password     = cleaned_data.get('password')
         
         user = User.objects.filter(username = username).first()
         

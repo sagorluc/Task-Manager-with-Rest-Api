@@ -6,10 +6,10 @@ from api_view.serializers import TaskSerializer
 # Create your views here.
 
 class TaskListCreateAPIView(ListCreateAPIView):
-    queryset = TaskModel.objects.all()
+    queryset         = TaskModel.objects.all()
     serializer_class = TaskSerializer
     
 
 class TaskRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
-    queryset = TaskModel.objects.all()
+    queryset         = TaskModel.objects.all()
     serializer_class = TaskSerializer

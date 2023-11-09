@@ -21,10 +21,10 @@ import uuid
 
 # Create your views here.
 class Registration(CreateView):
-    model = User
+    model         = User
     template_name = 'register.html'
-    form_class = RegistrationFrom
-    success_url = reverse_lazy('login')
+    form_class    = RegistrationFrom
+    success_url   = reverse_lazy('login')
     
     
 # class Loginn(LoginView):
@@ -57,6 +57,7 @@ def log_in(request):
 class LogoutView(View):
     
     def get(self, request, *args, **kwargs):
+        
         if request.user.is_authenticated:
             logout(request)
             messages.success(request, 'Logged out successfully.')
@@ -76,7 +77,7 @@ def change_password(request, token):
         context = {'user_id' : profile_obj.user_pass.id} # ekhane ektu jamela ace. id not getting
         
         if request.method == "POST":
-            new_password = request.POST.get('new-password')
+            new_password     = request.POST.get('new-password')
             confirm_password = request.POST.get('confirm-password')
             user_id = request.POST.get('user_id')
             print(user_id)
@@ -106,7 +107,7 @@ def change_password(request, token):
 
 
 
-#============================== Check Username =============================  
+#============================== Check by Username =============================  
 @csrf_exempt   
 def forget_password(request):
     try:
@@ -118,9 +119,9 @@ def forget_password(request):
                 messages.success(request, "This user is not found! ")
                 return redirect('forget_pass')
             else:
-                user_obj = User.objects.get(username= username) # get username
+                user_obj  = User.objects.get(username= username) # get username
                 
-                token = str(uuid.uuid4()) # generate token
+                token     = str(uuid.uuid4()) # generate token
                 user_prof = GeneratePasswordToken(user_pass = user_obj) # username of user_profile
                 user_prof.forget_password_token = token # user token
                 user_prof.save()
