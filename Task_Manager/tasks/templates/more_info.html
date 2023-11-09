@@ -17,13 +17,18 @@
     {% endfor %}  {% endcomment %}
 
 
-    {% if info.tasks.all %}
-        <h3>Images:</h3>
+    <div style="display: flex;">
+        {% if info.tasks.all %}
         {% for image in info.tasks.all %}
-            <img src="{{ image.image.url }}" alt="Task Image" style="width: 200px; height: 150px;">
-            <a href="{% url 'delete_image' image.id %}" class="btn btn-danger">Delete</a>
+            <div>              
+                <img src="{{ image.image.url }}" alt="Task Image" style="width: 200px; height: 150px; margin-right:15px;">
+                <br>
+                <a href="{% url 'delete_image' image.id %}" class="btn btn-danger" style="margin-top: 10px;">Delete</a>
+            </div>      
         {% endfor %}
     {% endif %}
+    </div><br><br>
+    
 
     <h3>ID:- {{info.id}}</h3>
 
