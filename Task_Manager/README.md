@@ -16,11 +16,12 @@ This project is a task management web application with a REST API built using Dj
 
 * git clone https://github.com/sagorluc/Task-Manager-with-Rest-Api.git
 * cd Task-Manager-with-Rest-Api
+* Task_Manager
 
 ### Create a virtual environment:
-python3 -m venv venv
+virtualenv vrenv
 
-venv\Scripts\activate
+.\vrenv\Scripts\activate
 
 ### Install the project dependencies:
 pip install -r requirements.txt
@@ -48,11 +49,16 @@ python manage.py runserver
 * Password Reset (Optional)
 * Task List View
 * Task Creation View
-* Task Details View
-* Task Update View
+* Task Details View (Multiple image can set for one task and can delete the particular image)
+* Task Update View (with image)
 * Task Deletion (with confirmation)
 * Filtering and Searching tasks
-* REST API endpoints for tasks
+* REST API endpoints for task Create, Update, Retrieve, Delete
+
+# Django Template Documentation URL
+* Registration Or Sign up: http://127.0.0.1:8000/auth/
+* Login: http://127.0.0.1:8000/auth/login/
+ 
 
 # REST API Documentation
 ### List all tasks
