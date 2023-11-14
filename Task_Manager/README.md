@@ -16,7 +16,7 @@ This project is a task management web application with a REST API built using Dj
 
 * git clone https://github.com/sagorluc/Task-Manager-with-Rest-Api.git
 * cd Task-Manager-with-Rest-Api
-* Task_Manager
+
 
 ### Create a virtual environment:
 virtualenv vrenv
