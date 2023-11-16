@@ -113,7 +113,7 @@ def forget_password(request):
     try:
         if request.method == 'POST':
             username = request.POST.get('username') # get the username from input form
-            # print(username)
+            print(username)
                        
             if not User.objects.filter(username=username).first(): # filter username
                 messages.success(request, "This user is not found! ")
