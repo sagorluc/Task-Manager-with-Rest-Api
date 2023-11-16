@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% block title %}All Task{% endblock title %}
+{% load static %}
+{% block join_css %}
+<link rel="stylesheet" href="{% static 'css/show_crud.css' %}">
+{% endblock join_css %}
+
+
+{% block body %}
+
+<div style="margin-bottom: 70px;">
+<h1 style="width:30%; margin:auto; margin-top: 10px; color: green;">
+  All Task
+</h1>
+
+<div style="margin-left: 50px; margin-top: 20px;">
+  <form method="get" action="{% url 'all_tasks' %}">
+    Priority:
+    <select name="priority">
+        <option value="" selected>All</option>
+        <option value="high">High</option>
+        <option value="medium">Medium</option>
+        <option value="low">Low</option>
+    </select>
+  
+    Completion:
+    <select name="complete">
+        <option value="" selected>All</option>
+        <option value="True">Completed</option>
+        <option value="False">Incomplete</option>
+    </select>
+  
+    Due Date:
+    <input type="text" name="due_date" placeholder="Due date YYYY-MM-DD">
+  
+    Created At:
+    <input type="text" name="created_at" placeholder="Created date YYYY-MM-DD">
+  
+    <input type="submit" class="btn btn-primary" value="Filter">
+  </form>
+</div>
+
+
+  <table class="table table-success table-striped" style="width:95%; margin: auto; text-align: center; margin-top: 50px;">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Photo</th>
+        <th scope="col">Title</th>
+        <th scope="col">Name</th>
+        <th scope="col">Due Date</th>
+        <th scope="col">Priority</th>
+        <th scope="col">Status</th>
+        <th scope="col">Update</th>
+        <th scope="col">Delete</th>
+        <th scope="col">More Info</th>
+      </tr>
+    </thead>
+    <tbody>
+
+  {% for task in all_tasks %}
+
+      {% with task_image=task.tasks.first %}
+      <tr>      
+        <th scope="row">{{task.id}}</th>
+        <td> 
+
+        {% if task_image %}          
+            <img style="width: 100px; height: 70px;" 
+            src="{{ task_image.image.url }}" alt="image" class="image1">
+        {% else %}
+          Image not Avaiable
+        {% endif %} 
+        
+        </td>
+        <td> {{task.title}} </td>
+        <td> {{task.user.username}} </td>
+        <td> {{task.due_date}} </td>
+        <td> {{task.priority}} </td>
+        <td style="color: green;">
+          {% if task.complete %} 
+             <span>Completed</span>
+          {% else %}
+             <span style="color: red;">Incomplete</span>
+          {% endif %}         
+        </td>
+          <td> <a href="{% url "update_task" task.id %}" class="btn btn-warning">Update</a> </td>
+          <td> <a href="{% url "delete_task" task.id %}" class="btn btn-danger">Delete</a> </td>
+          <td> <a href="{% url "detail_task" task.id %}" class="btn btn-primary">MoreInfo</a> </td>
+
+        {% if not task.complete %}
+          <td> <a href="{% url 'complate_task' task.id %}" class="btn btn-success">Complete</a> </td>
+        {% endif %}
+
+      </tr>
+        {% endwith %}
+  {% endfor %}
+
+    </tbody>
+  </table>
+</div>
+{% endblock body %}

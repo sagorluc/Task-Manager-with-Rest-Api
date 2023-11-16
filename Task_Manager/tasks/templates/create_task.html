@@ -8,20 +8,14 @@
     {% load crispy_forms_tags %}
     <div style="width: 50%; margin: auto; margin-bottom: 100px;">
      
-        <form method= 'POST'>
+        <form method= 'POST' enctype="multipart/form-data">
             {% csrf_token %}
 
             {{form|crispy}}
+            <input type="file" name="images" multiple id=""> <br><br>
             <input class="btn btn-primary" type="submit" value="Submit">
 
         </form>
-  
-        {% comment %}
-         <h3>ID: {{id}}</h3>
-        <h3>Book Name: {{book_name}}</h3>
-        <h3>Author: {{author}}</h3>
-        <h3>Category: {{category}}</h3>
-         {% endcomment %}
 
     </div>
 {% endblock body %}

@@ -1,3 +1,6 @@
+from typing import Any
+from django.db import models
+from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import logout, login
 from django.urls import reverse_lazy
@@ -19,34 +22,74 @@ class CreateTask(CreateView):
     form_class = TaskForm
     template_name = 'create_task.html'
     context_object_name = 'create'
-    # success_url = reverse_lazy('show_task')
-    
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
     def form_valid(self, form):
-        # initial completeness set kora holo based on the form submission
-        self.object = form.save(commit=False)
-        if self.object.complete:
-            return super().form_valid(form)
-        else:
-            return super().form_valid(form)
+        form.instance.user = self.request.user
+        response = super().form_valid(form)
+
+        images = self.request.FILES.getlist('images')
+        for image in images:
+            task_image = TaskImage(task=form.instance, image=image)
+            task_image.save()
+
+        return response
 
     def get_success_url(self):
-        if self.object.complete:
-            return reverse_lazy('complate_task', kwargs={'id': self.object.id})
-        else:
-            return reverse_lazy('show_task')
+        return reverse_lazy('all_tasks')
+   
         
         
-
-
-@method_decorator(login_required, name='dispatch')
 class ShowAllTask(ListView):
     model = TaskModel
-    template_name = 'show_task.html'
+    template_name = 'show_all_tasks.html'
+    context_object_name = 'all_tasks'
+    
+    def get_queryset(self):
+        return TaskModel.objects.filter(user= self.request.user)
+    
+    
+    def get(self, request, *args, **kwargs):
+        priority_filter = request.GET.get('priority', '')
+        complete_filter = request.GET.get('complete', '')
+        due_date_filter = request.GET.get('due_date', '')
+        created_at_filter = request.GET.get('created_at', '')
+
+        # filter conditions
+        filter_conditions = {} # keep in the empty dictionary
+        if priority_filter:
+            filter_conditions['priority'] = priority_filter
+        if complete_filter:
+            filter_conditions['complete'] = complete_filter
+        if due_date_filter:
+            filter_conditions['due_date'] = due_date_filter
+        if created_at_filter:
+            filter_conditions['created_at'] = created_at_filter
+
+        # filter conditions useing database
+        filtered_tasks = TaskModel.objects.filter(**filter_conditions, user= self.request.user)
+
+        context = {'all_tasks': filtered_tasks}
+        return render(request, self.template_name, context)
+    
+    
+       
+
+@method_decorator(login_required, name='dispatch')
+class IncompleteTask(ListView):
+    model = TaskModel
+    template_name = 'incomplete_task.html'
     context_object_name = 'tasks'
     
-    
-    
+    def get_queryset(self):
+        return TaskModel.objects.filter(user= self.request.user)
+        
 
+    
 @method_decorator(login_required, name='dispatch') 
 class CompleteTask(ListView):
     model = TaskModel
@@ -55,10 +98,10 @@ class CompleteTask(ListView):
 
     def get_queryset(self):
         # task er complete true set kora holo
-        TaskModel.objects.filter(pk=self.kwargs['id']).update(complete=True)
+        TaskModel.objects.filter(user= self.request.user, pk=self.kwargs['id']).update(complete=True)
         
         # complete true return kora holo
-        return TaskModel.objects.filter(complete=True)
+        return TaskModel.objects.filter(user= self.request.user, complete=True)
     
     
     
@@ -72,20 +115,21 @@ class UpdateTask(UpdateView):
     context_object_name = 'task'
 
     def form_valid(self, form):
+        
+        images = self.request.FILES.getlist('images')
+        for image in images:
+            task_image = TaskImage(task=form.instance, image=image)
+            task_image.save()
+
         return super().form_valid(form)
     
     
     def get_success_url(self):
-        if 'show_task' in self.request.META.get('HTTP_REFERER', ''):
-            return reverse_lazy('show_task')
-        elif 'complate_task' in self.request.META.get('HTTP_REFERER', ''):
-            return reverse_lazy('complate_task', kwargs={'id': self.kwargs['id']})
-        else:
-            return reverse_lazy('search')
-        
-        
+        return reverse_lazy('all_tasks')
     
-
+        
+        
+        
 @method_decorator(login_required, name='dispatch')
 class TaskDelete(DeleteView):
     model = TaskModel
@@ -139,7 +183,7 @@ class SearchTask(ListView):
 
     def get_queryset(self):
         keyword = self.request.GET.get('keyword', '')
-        queryset = TaskModel.objects.all()
+        queryset = TaskModel.objects.filter(user= self.request.user)
 
         if keyword:
             queryset = queryset.filter(Q(title__icontains=keyword) | Q(priority__icontains=keyword))
@@ -151,39 +195,4 @@ class SearchTask(ListView):
         context['search_form'] = SearchForm(self.request.GET)
         return context
     
-    
-
-  
-@method_decorator(login_required, name='dispatch')
-class FilterTask(View):
-    template_name = 'filter_task.html'
-    form_class = TaskFilterForm
-
-    def get(self, request):
-        form = self.form_class()
-        return render(request, self.template_name, {'form': form})
-
-    def post(self, request):
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            priority = form.cleaned_data['priority']
-            complete = form.cleaned_data['complete']
-            due_date = form.cleaned_data['due_date']
-            created_at = form.cleaned_data['created_at']
-            
-            tasks = TaskModel.objects.all()
-
-            if priority:
-                tasks = tasks.filter(priority__icontains=priority)
-            if complete is not None:
-                tasks = tasks.filter(complete=complete)
-            if due_date:
-                tasks = tasks.filter(due_date=due_date)
-            if created_at:
-                tasks = tasks.filter(created_at=created_at)
-
-            context = {'tasks': tasks}
-            return render(request, 'filter_task.html', context)
-
-        return render(request, self.template_name, {'form': form})
     

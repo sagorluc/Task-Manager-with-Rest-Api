@@ -13,24 +13,20 @@
             <form method= 'POST' style="margin-bottom: 50px;" enctype="multipart/form-data">
                 {% csrf_token %}
 
-                {{form|crispy}}           
+                {{form|crispy}}  
+                <input type="file" name="images" multiple id="">  <br><br>      
                 <button class="btn btn-primary" type="submit">Update</button>
-        
-
-                {% comment %} <input class="btn btn-primary" type="submit" value="Update"> {% endcomment %}
-
+                
             </form>
         {% else %}
             <form method= 'POST' style="margin-bottom: 50px;" enctype="multipart/form-data">
                 {% csrf_token %}
 
                 {{form|crispy}}
-
+                <input type="file" name="images" multiple id="">  <br><br>
                 <a href="{% url "update_task" task.id %}">
                     <button class="btn btn-primary" type="submit">Update</button>
                 </a>
-
-                {% comment %} <input class="btn btn-primary" type="submit" value="Update"> {% endcomment %}
 
             </form>
         {% endif %}
